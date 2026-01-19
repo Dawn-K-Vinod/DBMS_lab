@@ -1,0 +1,42 @@
+INDEX_NAME                                                                                                                       TABLE_NAME                                                                                                                       STATUS 
+-------------------------------------------------------------------------------------------------------------------------------- -------------------------------------------------------------------------------------------------------------------------------- --------
+IDX_STD_DEPT                                                                                                                     STUDENTS                                                                                                                         VALID    
+
+
+
+DESC instructors
+Name          Null     Type         
+------------- -------- ------------ 
+INSTRUCTOR_ID NOT NULL NUMBER(38)   
+NAME                   VARCHAR2(20) 
+DEPT                   VARCHAR2(20) 
+
+
+
+DESC COURSES
+Name          Null     Type         
+------------- -------- ------------ 
+COURSE_ID     NOT NULL NUMBER(38)   
+FILE1         NOT NULL VARCHAR2(20) 
+CREDIT                 NUMBER(38)   
+INSTRUCTOR_ID          NUMBER(38)   
+
+
+
+DESC students
+Name   Null     Type         
+------ -------- ------------ 
+ROLLNO NOT NULL NUMBER(38)   
+NAME            VARCHAR2(20) 
+DOB             DATE         
+DEPT            VARCHAR2(20) 
+EMAIL           VARCHAR2(30) 
+
+
+
+DESC enrollment
+Name      Null     Type       
+--------- -------- ---------- 
+ROLLNO    NOT NULL NUMBER(38) 
+COURSE_ID NOT NULL NUMBER(38) 
+GRADE              CHAR(2)    
