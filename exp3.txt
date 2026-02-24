@@ -6,6 +6,8 @@
 --  PRIMARY KEY(emp_id)
 --);
 
+--DESC Employee;
+
 --INSERT INTO Employee VALUES('E001', 'Dawn', 'HR', 8050);
 --INSERT INTO Employee VALUES('E002', 'Ovan', 'Marketing', 6100);
 --INSERT INTO Employee VALUES('E003', 'Charles Brown', 'Production', 4670);
