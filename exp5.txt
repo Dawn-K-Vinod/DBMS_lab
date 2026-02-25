@@ -1,0 +1,67 @@
+--
+--create table Customer_5 (
+--CustomerId varchar(5),
+--CustomerName varchar(30),
+--ContactNo number(10),
+--Address varchar(50),
+--City varchar(20),
+--PostalCode varchar(10),
+--Country varchar(20),
+--primary key(CustomerId)
+--);
+--
+--create table Employee_5(
+--EmployeeId varchar(5),
+--Firstname varchar(20),
+--Lastname varchar(20),
+--DoB date,
+--Photo varchar(20),
+--primary key(EmployeeId)
+--);
+--
+--
+--create table Orders_5(
+--OrderId varchar(5),
+--CustomerId varchar(5),
+--EmployeeId varchar(5),
+--OrderDate date,
+--ShipperId varchar(5),
+--primary key(OrderId),
+--foreign key(CustomerId) references Customer_5(CustomerID),
+--foreign key(EmployeeId) references Employee_5(EmployeeId)
+--);
+
+
+
+--insert into Customer_5 values ('C001','Alice Johnson',1234567890,'12 Park Ave','New York','10001','USA');
+--insert into Customer_5 values ('C002','Bob Smith',2345678901,'45 Lake St','New York','10002','USA');
+--insert into Customer_5 values ('C003','Charlie Brown',3456789012,'78 Hill Rd','New York','10003','USA');
+--insert into Customer_5 values ('C004','David Lee',4567890123,'23 Green St','New York','10004','USA');
+--insert into Customer_5 values ('C005','Eva Martinez',5678901234,'56 Sunset Blvd','Toronto','M5H2N2','Canada');
+
+--insert into Employee_5 values ('E001','John','Miller',date '1975-06-15','john.jpg');
+--insert into Employee_5 values ('E002','Sara','Wilson',date '1985-03-22','sara.jpg');
+--insert into Employee_5 values ('E003','Michael','Taylor',date '1990-11-10','michael.jpg');
+--insert into Employee_5 values ('E004','Emma','Anderson',date '1982-07-05','emma.jpg');
+--insert into Employee_5 values ('E005','Daniel','Thomas',date '1978-01-30','daniel.jpg');
+--
+--insert into Orders_5 values ('O001','C001','E001',date '2021-01-10','S001');
+--insert into Orders_5 values ('O002','C001','E002',date '2021-03-15','S002');
+--insert into Orders_5 values ('O003','C001','E003',date '2022-07-20','S001');
+--insert into Orders_5 values ('O004','C002','E004',date '2020-05-18','S003');
+--insert into Orders_5 values ('O005','C003','E002',date '2023-09-25','S002');
+
+
+
+--select * from customer_5 order by customername;
+--select * from orders_5 order by orderdate;
+--select * from employee_5 where DoB >='01-01-1981' order by DoB DESC;
+--select * from orders_5 where customerid in (select customerid from customer_5 where country='USA') order by OrderDate desc;
+--select distinct customerid, count(*) as total_orders from orders_5 group by customerid order by customerid;
+--select city, count(customerid) as Total_Customers from customer_5 group by city;
+--select distinct customerid from orders_5 group by customerid having count(orderid)>2;
+--select distinct City from customer_5 group by city having count(customerid)>3;
+
+
+
+
