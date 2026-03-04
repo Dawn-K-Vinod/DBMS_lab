@@ -117,7 +117,7 @@ minus
 select cust_id from delivery
 );
 
-select item_id from orders where order_id not in (select order_id from delivery);
+select distinct item_id from orders where order_id not in (select order_id from delivery);
 
 
 
