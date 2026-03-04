@@ -38,3 +38,98 @@ foreign key (order_id) references orders(order_id)
 );
 
 
+
+--insert into items values ('I001','Samsung Galaxy S4','Mobile',5500,10);
+--insert into items values ('I002','iPhone 5','Mobile',6500,8);
+--insert into items values ('I003','Dell Laptop','Laptop',4800,5);
+--insert into items values ('I004','Sony TV','Electronics',7200,4);
+--insert into items values ('I005','HP Printer','Electronics',2500,6);
+--insert into items values ('I006','Lenovo Tablet','Tablet',3200,7);
+--insert into items values ('I007','Canon Camera','Camera',5200,3);
+--insert into items values ('I008','Nokia Basic','Mobile',1500,15);
+--
+--insert into customers values ('C001','Mickey','New York Street','New York');
+--insert into customers values ('C002','John','Sunset Blvd','California');
+--insert into customers values ('C003','James','Lake View Road','Texas');
+--insert into customers values ('C004','Jennifer','Hill Street','Florida');
+--insert into customers values ('C005','Robert','Main Street','New York');
+--insert into customers values ('C006','Julia','Park Avenue','California');
+--insert into customers values ('C007','David','Ocean Drive','Nevada');
+--insert into customers values ('C008','Sophia','Green Street','Texas');
+
+--insert into orders values ('O001','I001','C001',2,'12-02-2014');
+--insert into orders values ('O002','I002','C002',1,'10-03-2012');
+--insert into orders values ('O003','I004','C003',1,'15-07-2015');
+--insert into orders values ('O004','I003','C001',1,'21-01-2013');
+--insert into orders values ('O005','I007','C004',2,'05-09-2016');
+--insert into orders values ('O006','I001','C002',1,'11-11-2014');
+--insert into orders values ('O007','I005','C005',3,'19-08-2011');
+--insert into orders values ('O008','I006','C006',1,'23-12-2018');
+--insert into orders values ('O009','I002','C001',1,'14-05-2019');
+--insert into orders values ('O009','I002','C001',1,'14-05-2019');
+--insert into orders values ('O0010','I002','C005',1,'14-05-2019');
+--
+
+--
+--insert into delivery values ('D001','C001','O001');
+--insert into delivery values ('D002','C002','O002');
+--insert into delivery values ('D003','C003','O003');
+--insert into delivery values ('D004','C004','O005');
+--insert into delivery values ('D005','C002','O006');
+--insert into delivery values ('D006','C006','O008');
+
+
+select * from customers where cust_id in (
+select cust_id from customers
+intersect
+select cust_id from orders
+);
+
+
+select * from customers where cust_id in (
+select cust_id from customers
+intersect
+select cust_id from delivery
+);
+
+
+select c.cust_id, c.cust_name, o.order_date 
+from orders o join customers c 
+ON c.cust_id = o.cust_id
+where c.cust_name like 'J%';
+
+
+
+select item_name, price from items where item_id in(
+  select item_id from orders where cust_id in(
+    select cust_id from customers where cust_name='Mickey'
+    intersect
+    select cust_id from orders
+)
+);
+
+
+select * from customers where cust_id in (
+select cust_id from customers
+intersect
+select cust_id from orders where order_date>='01-02-2013'
+minus
+select cust_id from delivery
+);
+
+select item_id from orders where order_id not in (select order_id from delivery);
+
+
+
+--Find the itemid of items which has either been ordered or not delivered. (UseSET UNION)
+
+--Find the name of all customers who have placed an order and have their orders
+--Find the custname of all customers who have placed an order but not having their orders delivered. (Use SET MINUS) delivered.(Use SET INTERSECTION)
+--Find the name of the customer who has placed the most number of orders.
+--Find the details of all customers who have purchased items exceeding a price of 5000$
+--Find the name and address of customers who has not ordered a ‘Samsung GalaxyS4’
+--Perform Left Outer Join and Right Outer Join on Customers & Orders Table.
+--Find the details of all customers grouped by state
+--Display the details of all items grouped by category and having a price greater than average price of all items.
+
+
