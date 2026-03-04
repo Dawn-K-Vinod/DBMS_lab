@@ -1,0 +1,40 @@
+
+create table items (
+item_id varchar(5),
+item_name varchar(50),
+category varchar(30),
+price number(10,2),
+instock int,
+primary key (item_id),
+check (instock>=0)
+);
+
+create table customers(
+cust_id varchar(5),
+cust_name varchar(30),
+address varchar(50),
+state varchar(20),
+primary key (cust_id)
+);
+
+create table orders(
+order_id varchar(5),
+item_id varchar(5),
+cust_id varchar(5),
+quantity int,
+order_date date,
+primary key(order_id),
+foreign key (item_id) references items(item_id),
+foreign key (cust_id) references customers(cust_id)
+);
+
+create table delivery(
+delivery_id varchar(5),
+cust_id varchar(5),
+order_id varchar(5),
+primary key(delivery_id),
+foreign key (cust_id) references customers(cust_id),
+foreign key (order_id) references orders(order_id)
+);
+
+
