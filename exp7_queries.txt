@@ -1,0 +1,29 @@
+--CREATE TABLE BANK (
+--    BANKCODE VARCHAR(3) PRIMARY KEY,
+--    BANKNAME VARCHAR(50) not null,
+--    HEADOFFICE VARCHAR(30),
+--    BRANCHES INT not null check(branches>0)
+--);
+--
+--INSERT INTO BANK VALUES ('SBI','SBI Bank','Delhi',30);
+--INSERT INTO BANK VALUES ('CIB','Canara Bank','Ernakulam',20);
+--INSERT INTO BANK VALUES ('SIB','South Indian Bank','Madras',30);
+--INSERT INTO BANK VALUES ('AXB','Axis Bank','Kottayam',15);
+--INSERT INTO BANK VALUES ('FDB','Federal Bank','Ernakulam',25);
+--INSERT INTO BANK VALUES ('PNB','Punjab National Bank','Delhi',24);
+--INSERT INTO BANK VALUES ('WUB','Western Union','Ernakulam',50); 
+--
+--INSERT INTO BANK VALUES ('IFB','Indian Federal Bank','Ernakulam',25);
+--commit;
+--select * from bank;
+--
+--INSERT INTO BANK VALUES ('ICL','ICL Fincorp','Ernakulam',5);
+--savepoint A;
+--select * from bank;
+--
+--INSERT INTO BANK VALUES ('GMB','Grameen Bank','Punr',15);
+--savepoint B;
+--select * from bank;
+--
+--rollback to A;
+--select * from bank;
