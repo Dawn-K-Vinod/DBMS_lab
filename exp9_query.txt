@@ -1,0 +1,85 @@
+CREATE TABLE Bank (
+    bankcode    VARCHAR(3)      PRIMARY KEY,
+    bankname    VARCHAR(50)     NOT NULL,
+    headoffice  VARCHAR(50),
+    branches    INT             CHECK (branches > 0)
+);
+
+-- Populating the Bank table
+INSERT INTO Bank VALUES ('B01', 'State Bank of India',    'Mumbai',     250);
+INSERT INTO Bank VALUES ('B02', 'Federal Bank',           'Ernakulam',  180);
+INSERT INTO Bank VALUES ('B03', 'South Indian Bank',      'Ernakulam',   95);
+INSERT INTO Bank VALUES ('B04', 'Canara Bank',            'Bangalore',  300);
+INSERT INTO Bank VALUES ('B05', 'HDFC Bank',              'Mumbai',     400);
+INSERT INTO Bank VALUES ('B06', 'Kerala Gramin Bank',     'Ernakulam',   45);
+INSERT INTO Bank VALUES ('B07', 'Indian Overseas Bank',   'Chennai',    120);
+INSERT INTO Bank VALUES ('B08', 'Punjab National Bank',   'New Delhi',  210);
+
+
+CREATE TABLE Branch (
+    branchid    VARCHAR(5)      PRIMARY KEY,
+    branchname  VARCHAR(50)     DEFAULT 'New Delhi',
+    bankid      VARCHAR(3),
+    FOREIGN KEY (bankid) REFERENCES Bank(bankcode)
+);
+
+-- Populating the Branch table
+INSERT INTO Branch VALUES ('BR001', 'Kottayam',   'B01');
+INSERT INTO Branch VALUES ('BR002', 'Ernakulam',  'B02');
+INSERT INTO Branch VALUES ('BR003', 'Kottayam',   'B03');
+INSERT INTO Branch VALUES ('BR004', 'Kottayam',   'B04');
+INSERT INTO Branch VALUES ('BR005', 'Ernakulam',  'B05');
+INSERT INTO Branch VALUES ('BR006', 'Thrissur',   'B06');
+INSERT INTO Branch VALUES ('BR007', 'Chennai',    'B07');
+INSERT INTO Branch VALUES ('BR008', 'Kottayam',   'B08');
+INSERT INTO Branch (branchid, bankid) VALUES ('BR009', 'B05'); -- Default branchname applies
+
+
+
+
+
+--1
+CREATE VIEW bank_headoffice AS
+SELECT *
+FROM Bank
+WHERE headoffice = 'Ernakulam';
+-- Display
+SELECT * FROM bank_headoffice;
+
+
+--2
+CREATE VIEW bank_branch AS
+SELECT b.*
+FROM Bank b
+JOIN Branch br ON b.bankcode = br.bankid
+WHERE br.branchname = 'Kottayam';
+-- Display
+SELECT * FROM bank_branch;
+
+
+--3
+CREATE VIEW bank_50branches AS
+SELECT *
+FROM Bank
+WHERE branches > 50;
+-- Display
+SELECT * FROM bank_50branches;
+
+
+--4
+CREATE VIEW bank_branchname AS
+SELECT b.bankname, br.branchname
+FROM Bank b
+JOIN Branch br ON b.bankcode = br.bankid;
+-- Display
+SELECT * FROM bank_branchname;
+
+
+--5
+CREATE VIEW bank_outside_ernakulam AS
+SELECT *
+FROM Bank
+WHERE headoffice != 'Ernakulam';
+-- Display
+SELECT * FROM bank_outside_ernakulam;
+
