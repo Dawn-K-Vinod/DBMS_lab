@@ -1,0 +1,290 @@
+--1. Function — Factorial of a Number
+-- Create the Function
+CREATE OR REPLACE FUNCTION factorial(n IN INT)
+RETURN INT
+IS
+    result INT := 1;
+BEGIN
+    IF n = 0 THEN
+        RETURN 1;
+    END IF;
+    FOR i IN 1..n LOOP
+        result := result * i;
+    END LOOP;
+    RETURN result;
+END;
+/
+
+-- PL/SQL Program to read from user and display factorial
+DECLARE
+    num     INT;
+    fact    INT;
+BEGIN
+    num  := &num;   -- Read from user
+    fact := factorial(num);
+    DBMS_OUTPUT.PUT_LINE('Factorial of ' || num || ' is : ' || fact);
+END;
+/
+
+
+---------------------------------------------------------------------------
+
+
+--2. Table & Procedure — Boost Marks by 5%
+-- Create Table
+CREATE TABLE student_details (
+    roll    INT PRIMARY KEY,
+    marks   INT,
+    phone   INT
+);
+
+-- Populate Table
+INSERT INTO student_details VALUES (1, 80, 9876543210);
+INSERT INTO student_details VALUES (2, 65, 9876500001);
+INSERT INTO student_details VALUES (3, 72, 9876500002);
+INSERT INTO student_details VALUES (4, 55, 9876500003);
+
+-- Create Procedure to boost marks by 5%
+CREATE OR REPLACE PROCEDURE pr1
+IS
+BEGIN
+    UPDATE student_details
+    SET marks = marks * 1.05;
+
+    DBMS_OUTPUT.PUT_LINE('Marks updated successfully by 5%%');
+    COMMIT;
+END;
+/
+-- Execute Procedure
+BEGIN
+    pr1;
+END;
+/
+-- Verify
+SELECT * FROM student_details;
+
+
+
+-----------------------------------------------------------------------------------
+
+
+--3. Table, Function & Procedure — Grade Calculation
+-- Create Table
+CREATE TABLE student (
+    id      INT PRIMARY KEY,
+    name    VARCHAR(30),
+    m1      INT,
+    m2      INT,
+    m3      INT,
+    total   INT,
+    grade   VARCHAR(2)
+);
+
+-- Create Function f1 to calculate Grade
+CREATE OR REPLACE FUNCTION f1(total IN INT)
+RETURN VARCHAR2
+IS
+    grade VARCHAR2(2);
+BEGIN
+    IF    total >= 270 THEN grade := 'A';
+    ELSIF total >= 240 THEN grade := 'B';
+    ELSIF total >= 210 THEN grade := 'C';
+    ELSIF total >= 180 THEN grade := 'D';
+    ELSE                     grade := 'F';
+    END IF;
+    RETURN grade;
+END;
+/
+
+-- Create Procedure p1 to update total and grade
+CREATE OR REPLACE PROCEDURE p1(sid IN INT)
+IS
+    tot INT;
+    grd VARCHAR2(2);
+BEGIN
+    SELECT m1 + m2 + m3
+    INTO tot
+    FROM student
+    WHERE id = sid;
+
+    grd := f1(tot);
+
+    UPDATE student
+    SET total = tot, grade = grd
+    WHERE id = sid;
+
+    DBMS_OUTPUT.PUT_LINE('Total : ' || tot || ' | Grade : ' || grd);
+    COMMIT;
+END;
+/
+
+-- PL/SQL Block to read from user, insert and update
+DECLARE
+    sid     INT;
+    sname   VARCHAR2(30);
+    sm1     INT;
+    sm2     INT;
+    sm3     INT;
+BEGIN
+    -- Read from user
+    sid   := &id;
+    sname := '&name';
+    sm1   := &m1;
+    sm2   := &m2;
+    sm3   := &m3;
+
+    -- Insert into table
+    INSERT INTO student(id, name, m1, m2, m3, total, grade)
+    VALUES (sid, sname, sm1, sm2, sm3, 0, NULL);
+
+    COMMIT;
+
+    -- Call procedure to update total and grade
+    p1(sid);
+
+    DBMS_OUTPUT.PUT_LINE('Student record inserted and updated successfully.');
+END;
+/
+-- Verify
+SELECT * FROM student;
+
+
+
+
+
+
+--------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------
+
+
+
+
+--Triggers
+
+--Table Creation
+-- customer_details table
+CREATE TABLE customer_details (
+    cust_id     INT         UNIQUE,
+    cust_name   VARCHAR(30),
+    address     VARCHAR(50)
+);
+-- emp_details table
+CREATE TABLE emp_details (
+    empid       INT         UNIQUE,
+    empname     VARCHAR(30),
+    salary      INT
+);
+-- cust_count table
+CREATE TABLE cust_count (
+    count_row   INT
+);
+-- Initialize count_row to 0
+INSERT INTO cust_count VALUES (0);
+
+
+----------------------------------------------------------------------
+
+--1. Trigger — Display message on new INSERT in customer_details
+CREATE OR REPLACE TRIGGER trg_customer_insert
+AFTER INSERT ON customer_details
+FOR EACH ROW
+BEGIN
+    DBMS_OUTPUT.PUT_LINE('New customer record inserted!');
+    DBMS_OUTPUT.PUT_LINE('Customer ID   : ' || :NEW.cust_id);
+    DBMS_OUTPUT.PUT_LINE('Customer Name : ' || :NEW.cust_name);
+    DBMS_OUTPUT.PUT_LINE('Address       : ' || :NEW.address);
+END;
+/
+-- Test
+INSERT INTO customer_details VALUES (1, 'Alice', 'Kottayam');
+INSERT INTO customer_details VALUES (2, 'Bob',   'Ernakulam');
+
+
+----------------------------------------------------------------------
+
+
+--2. Trigger — Display message when salary > 20000 in emp_details
+CREATE OR REPLACE TRIGGER trg_salary_check
+BEFORE INSERT OR UPDATE ON emp_details
+FOR EACH ROW
+BEGIN
+    IF :NEW.salary > 20000 THEN
+        DBMS_OUTPUT.PUT_LINE('Warning: Salary entered is greater than 20000!');
+        DBMS_OUTPUT.PUT_LINE('Employee : ' || :NEW.empname ||
+                             ' | Salary : ' || :NEW.salary);
+    END IF;
+END;
+/
+-- Test
+INSERT INTO emp_details VALUES (101, 'John',  15000);  -- No warning
+INSERT INTO emp_details VALUES (102, 'Smith', 25000);  -- Warning displayed
+
+
+----------------------------------------------------------------------
+
+
+--3. Trigger — Increment / Decrement count_row in cust_count
+CREATE OR REPLACE TRIGGER trg_cust_count
+AFTER INSERT OR DELETE ON customer_details
+FOR EACH ROW
+BEGIN
+    IF INSERTING THEN
+        UPDATE cust_count SET count_row = count_row + 1;
+        DBMS_OUTPUT.PUT_LINE('Row inserted. Count incremented.');
+    ELSIF DELETING THEN
+        UPDATE cust_count SET count_row = count_row - 1;
+        DBMS_OUTPUT.PUT_LINE('Row deleted. Count decremented.');
+    END IF;
+END;
+/
+-- Test
+INSERT INTO customer_details VALUES (3, 'Carol', 'Thrissur');
+INSERT INTO customer_details VALUES (4, 'David', 'Chennai');
+DELETE FROM customer_details WHERE cust_id = 4;
+-- Verify count
+SELECT * FROM cust_count;
+
+
+----------------------------------------------------------------------
+
+
+--4. Trigger — Move deleted rows to 'deleted' table & updated rows to 'updated' table
+-- Create backup tables
+CREATE TABLE deleted (
+    empid       INT,
+    empname     VARCHAR(30),
+    salary      INT
+);
+CREATE TABLE updated (
+    empid       INT,
+    empname     VARCHAR(30),
+    old_salary  INT,
+    new_salary  INT
+);
+-- Create Trigger
+CREATE OR REPLACE TRIGGER trg_emp_backup
+AFTER DELETE OR UPDATE ON emp_details
+FOR EACH ROW
+BEGIN
+    IF DELETING THEN
+        INSERT INTO deleted VALUES (:OLD.empid, :OLD.empname, :OLD.salary);
+        DBMS_OUTPUT.PUT_LINE('Deleted record moved to deleted table.');
+
+    ELSIF UPDATING THEN
+        INSERT INTO updated VALUES (:OLD.empid, :OLD.empname,
+                                    :OLD.salary, :NEW.salary);
+        DBMS_OUTPUT.PUT_LINE('Updated record moved to updated table.');
+    END IF;
+END;
+/
+-- Test DELETE
+DELETE FROM emp_details WHERE empid = 101;
+-- Test UPDATE
+UPDATE emp_details SET salary = 30000 WHERE empid = 102;
+-- Verify
+SELECT * FROM deleted;
+SELECT * FROM updated;
+
+
+
+
