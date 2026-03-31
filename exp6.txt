@@ -119,6 +119,105 @@ select cust_id from delivery
 select distinct item_id from orders where order_id not in (select order_id from delivery);
 
 
+--7
+SELECT cust_name FROM customers
+WHERE cust_id IN (SELECT cust_id FROM orders)
+INTERSECT
+SELECT cust_name FROM customers
+WHERE cust_id IN (SELECT cust_id FROM delivery);
+
+
+
+--8
+SELECT cust_name FROM customers
+WHERE cust_id IN (SELECT cust_id FROM orders)
+MINUS
+SELECT cust_name FROM customers
+WHERE cust_id IN (SELECT cust_id FROM delivery);
+
+
+
+--9
+SELECT cust_name
+FROM customers
+WHERE cust_id = (
+    SELECT cust_id
+    FROM orders
+    GROUP BY cust_id
+    ORDER BY COUNT(order_id) DESC
+    FETCH FIRST 1 ROWS ONLY
+);
+--OR
+SELECT cust_name
+FROM customers
+WHERE cust_id = (
+    SELECT cust_id
+    FROM orders
+    GROUP BY cust_id
+    HAVING COUNT(order_id) = (
+        SELECT MAX(COUNT(order_id))
+        FROM orders
+        GROUP BY cust_id
+    )
+);
+
+
+--10
+SELECT DISTINCT c.cust_id, c.cust_name, c.address, c.state
+FROM customers c
+JOIN orders o ON c.cust_id = o.cust_id
+JOIN items i ON o.item_id = i.item_id
+WHERE i.price > 5000;
+
+
+
+--11
+SELECT cust_name, address
+FROM customers
+WHERE cust_id NOT IN (
+    SELECT o.cust_id
+    FROM orders o
+    JOIN items i ON o.item_id = i.item_id
+    WHERE i.item_name = 'Samsung Galaxy S4'
+);
+
+
+
+--12
+-- LEFT OUTER JOIN
+SELECT c.cust_id, c.cust_name, c.state, o.order_id, o.item_id, o.order_date
+FROM customers c
+LEFT OUTER JOIN orders o ON c.cust_id = o.cust_id;
+-- RIGHT OUTER JOIN
+SELECT c.cust_id, c.cust_name, c.state, o.order_id, o.item_id, o.order_date
+FROM customers c
+RIGHT OUTER JOIN orders o ON c.cust_id = o.cust_id;
+
+
+
+--13
+SELECT state, cust_id, cust_name, address
+FROM customers
+ORDER BY state;
+-- Count of customers per state
+SELECT state, COUNT(cust_id) AS total_customers
+FROM customers
+GROUP BY state;
+
+
+
+--14
+SELECT category, item_id, item_name, price, instock
+FROM items
+WHERE price > (SELECT AVG(price) FROM items)
+ORDER BY category;
+-- Category-wise with HAVING clause
+SELECT category, AVG(price) AS avg_category_price
+FROM items
+GROUP BY category
+HAVING AVG(price) > (SELECT AVG(price) FROM items);
+
+
 
 --Find the itemid of items which has either been ordered or not delivered. (UseSET UNION)
 
