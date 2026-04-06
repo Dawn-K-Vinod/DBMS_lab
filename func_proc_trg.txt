@@ -1,0 +1,65 @@
+
+
+
+SET SERVEROUTPUT ON;
+SHOW SERVEROUT;
+
+
+-- trigger
+CREATE OR REPLACE TRIGGER tr
+BEFORE 
+INSERT OR UPDATE 
+ON stud_academics
+FOR EACH ROW
+
+DECLARE
+  temp VARCHAR2(10);
+BEGIN    
+    if :NEW.total IS null then
+      temp := 'NA';
+    ELSIF :NEW.total > 130 THEN
+      temp := 'A';
+    ELSIF :NEW.total > 110 THEN
+      temp := 'B';
+    ELSIF :NEW.total > 90 THEN
+      temp := 'C';
+    ELSIF :NEW.total > 70 THEN
+      temp := 'D';
+    ELSE 
+      temp := 'FAIL';
+    END IF;
+
+    :NEW.grade := temp; 
+END;
+/
+
+
+
+-- function
+CREATE OR REPLACE FUNCTION average_marks(m1 NUMBER, m2 NUMBER) 
+RETURN NUMBER
+AS
+BEGIN
+  RETURN ((m1 + m2) / 2);
+END;
+/
+
+
+
+--procedure
+CREATE OR REPLACE PROCEDURE pr
+AS
+BEGIN
+  UPDATE stud_academics
+  SET total = average_marks(mark1, mark2);
+END;
+/
+
+
+
+-- PL/SQL queries main body
+BEGIN
+  pr;
+END;
+/
+
